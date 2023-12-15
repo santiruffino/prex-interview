@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="secondary">
+      <ion-button>
+        <ion-back-button></ion-back-button>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button id="open-edit-modal">
+        <ion-icon slot="icon-only" name="pencil"></ion-icon>
+      </ion-button>
+      <ion-button id="open-action-sheet">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Icon Buttons</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ movie.title }}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <img alt="{{movie.title}}" src="{{movie.thumbnailUrl}}"/>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <p>{{ movie.description }}</p>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col>
+        <h3>Rating</h3>
+        <h3>
+          <ng-container *ngFor="let star of [].constructor(movieRating)">
+            ⭐️
+          </ng-container>
+        </h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-action-sheet trigger="open-action-sheet" header="Are you sure you want to delete this movie?" [buttons]="actionSheetButtons"></ion-action-sheet>
+
+  <ion-modal (willDismiss)="onWillDismiss($event)" trigger="open-edit-modal">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Edit movie</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <form (ngSubmit)="submitMovieChanges()" [formGroup]="movieForm">
+          <ion-item>
+            <ion-input
+              formControlName="title"
+              label="Enter the movie title"
+              labelPlacement="stacked"
+              placeholder="Movie title"
+              type="text"
+            ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-textarea
+              labelPlacement="stacked"
+              label="Enter the movie description"
+              placeholder="Type something here"
+              formControlName="description"
+              [autoGrow]="true"
+            ></ion-textarea>
+          </ion-item>
+          <ion-item>
+            <ion-input
+              formControlName="thumbnailUrl"
+              label="Enter the movie thumbnail url"
+              labelPlacement="stacked"
+              placeholder="Movie thumbnail url"
+              type="text"
+            ></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-range
+              labelPlacement="stacked"
+              label="Rate this movie"
+              formControlName="rating"
+              class="rating"
+              [ticks]="true" [snaps]="true" [min]="0"
+              [max]="5" [pinFormatter]="pinFormatter"
+              [pin]="true"></ion-range>
+          </ion-item>
+          <ion-row>
+            <ion-col>
+              <ion-button type="submit" expand="block" [disabled]="!movieForm.valid"
+              >Edit Movie
+              </ion-button
+              >
+            </ion-col>
+          </ion-row>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
